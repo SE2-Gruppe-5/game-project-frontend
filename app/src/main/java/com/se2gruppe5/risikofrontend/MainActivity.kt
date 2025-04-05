@@ -1,22 +1,22 @@
 package com.se2gruppe5.risikofrontend
 
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.TextStyle
 
-
-
+import com.se2gruppe5.risikofrontend.createLobby.CreateLobbyScreen
+import com.se2gruppe5.risikofrontend.styles.StyledButton
 
 
 class MainActivity : ComponentActivity() {
@@ -35,31 +35,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun StyledButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.labelLarge.copy(
-        color = Color.White,
-        fontSize = 24.sp
-    )
-) {
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(50),
-        modifier = modifier
-            .fillMaxWidth(fraction = 0.3f)
-            .height(56.dp)
-    ) {
-        Text(text = text, style = textStyle)
-    }
-}
 
 @Composable
 fun HomeScreen() {
     val darkBackground = Color(0xFF121212)
-
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -82,7 +62,8 @@ fun HomeScreen() {
 
             StyledButton(
                 text = "Create Lobby",
-                onClick = { /* TODO: Navigate or create lobby */ }
+                onClick = { val intent = Intent(context, CreateLobbyScreen()::class.java)
+                    context.startActivity(intent) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
