@@ -27,6 +27,9 @@
         <activity
             android:name=".createLobby.CreateLobbyScreen"
             android:exported="false" />
+        <activity
+            android:name=".createLobby.HostLobbyScreen"
+            android:exported="false" />
     </application>
 
 </manifest>

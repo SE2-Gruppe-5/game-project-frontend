@@ -98,7 +98,9 @@ fun drawLobbyScreen() {
             StyledButton(
                 text = "Create",
                 onClick = {
-                    // TODO: Handle creation logic
+                    val intent = Intent(context, HostLobbyScreen::class.java)
+                    intent.putExtra("playerName", name)
+                    context.startActivity(intent)
                 }
             )
         }
