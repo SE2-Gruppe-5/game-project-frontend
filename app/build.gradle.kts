@@ -63,6 +63,7 @@ afterEvaluate { //afterEvaluate needed, as task is unknown in early stage
 
 dependencies {
     val ktorVersion = "2.3.2"
+    implementation ("com.google.code.gson:gson:2.8.8")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion") // oder Android engine: ktor-client-okhttp
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")

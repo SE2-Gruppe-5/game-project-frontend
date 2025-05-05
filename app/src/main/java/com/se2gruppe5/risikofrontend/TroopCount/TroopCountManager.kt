@@ -33,7 +33,7 @@ class TroopCountManager(private val context: Context) {
 
                 withContext(Dispatchers.Main) {
                     // Aktualisiere die Truppenanzeige im UI
-                    textView.text = "Troops: ${territory.stat}"
+                    textView.text = "Troops: ${territory.troops}"
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -47,7 +47,7 @@ class TroopCountManager(private val context: Context) {
     fun updateTroops(territoryId: Int, newTroopCount: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val territory = TerritoryRecord(territoryId, newTroopCount)
+                val territory = TerritoryRecord(1, 10)
                 client.post("http://your-backend-api.com/api/territories/update") {
                     contentType(ContentType.Application.Json)
                     setBody(territory)
