@@ -62,6 +62,12 @@ afterEvaluate { //afterEvaluate needed, as task is unknown in early stage
 }
 
 dependencies {
+    val ktorVersion = "2.3.2"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion") // oder Android engine: ktor-client-okhttp
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation(libs.gson)
     implementation(libs.kotlinxCoroutines)
     implementation(libs.okhttp)
@@ -145,6 +151,8 @@ sonar {
                 "${project.layout.buildDirectory.get().asFile}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
             ).joinToString(",")
         )
+        property("sonar.coverage.exclusions",
+            "**/com/se2gruppe5/risikofrontend/game/territory/TerritoryVisualAndroid.kt, **/com/se2gruppe5/risikofrontend/game/territory/PointingArrowAndroid.kt,**/com/se2gruppe5/risikofrontend/game/dice/DiceVisualAndroid.kt, **/com/se2gruppe5/risikofrontend/lobby/**, **/com/se2gruppe5/risikofrontend/startmenu/**, **/com/se2gruppe5/risikofrontend/MainActivity.kt, **/com/se2gruppe5/risikofrontend/game/GameActivity.kt," )
         property(
             "sonar.coverage.exclusions",
             listOf(
@@ -155,6 +163,8 @@ sonar {
                 "**/com/se2gruppe5/risikofrontend/startmenu/**",
                 "**/com/se2gruppe5/risikofrontend/MainActivity.kt",
                 "**/com/se2gruppe5/risikofrontend/game/GameActivity.kt",
+                "**/com/se2gruppe5/risikofrontend/troopcount/TroopCountManager.kt",
+                "**/com/se2gruppe5/risikofrontend/troopcount/TroopService.kt",
                 "**/network/**"
             ).joinToString(",")
         )
