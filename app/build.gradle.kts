@@ -127,6 +127,12 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     )
     sourceDirectories.setFrom(files(srcDirs))
     classDirectories.setFrom(files(classDirs))
+
+    classDirectories.setFrom(
+        files(classDirs).filter {
+            !it.absolutePath.contains("ContinentDialog") // Add class or package name here
+        }
+    )
     executionData.setFrom(files(execData))
 }
 
@@ -144,6 +150,7 @@ sonar {
                 "${project.layout.buildDirectory.get().asFile}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
             ).joinToString(",")
         )
+
         property(
             "sonar.coverage.exclusions",
             listOf(
@@ -154,7 +161,9 @@ sonar {
                 "**/com/se2gruppe5/risikofrontend/startmenu/**",
                 "**/com/se2gruppe5/risikofrontend/MainActivity.kt",
                 "**/com/se2gruppe5/risikofrontend/game/GameActivity.kt"
+                "**/com/se2gruppe5/risikofrontend/popup/ContinentDialog.kt"
             ).joinToString(",")
+
         )
     }
 }

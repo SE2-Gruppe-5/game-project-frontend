@@ -3,6 +3,10 @@ package com.se2gruppe5.risikofrontend.game
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.se2gruppe5.risikofrontend.popup.ContinentDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -25,6 +29,12 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.game)
+
+
+        val showContinentButton: Button = findViewById(R.id.btn_show_continents)
+        showContinentButton.setOnClickListener {
+            showContinentDialog()
+        }
 
 //-------------------------------------- <Placeholder>
         val diceBtn = this.findViewById<ImageButton>(R.id.diceButton)
@@ -74,7 +84,10 @@ class GameActivity : AppCompatActivity() {
         })
 
 //-------------------------------------- </Placeholder>
+
     }
-
-
+    fun showContinentDialog() {
+        val dialog = ContinentDialog()
+        dialog.show(supportFragmentManager, "ContinentDialog")
+    }
 }
