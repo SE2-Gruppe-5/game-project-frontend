@@ -1,6 +1,10 @@
 package com.se2gruppe5.risikofrontend.network
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.se2gruppe5.risikofrontend.Constants
+import com.se2gruppe5.risikofrontend.network.dto.AssignmentsDTO
+import com.se2gruppe5.risikofrontend.network.dto.TroopDistributionDTO
 import com.se2gruppe5.risikofrontend.network.sse.SseClientService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,6 +50,24 @@ class NetworkClient : INetworkClient{
     override suspend fun startGame(lobbyCode: String) {
         val request = createRequest("GET", Constants.LOBBY_START_GAME_URL.replace("{id}", lobbyCode))
         execute(request)
+    }
+
+    private val gson = Gson()
+
+    suspend fun fetchTerritoryAssignments(): AssignmentsDTO? {
+        val request = createRequest("GET", "/game/assignTerritories")
+        val response = execute(request)
+        val json = response.body?.string()
+        val type = object : TypeToken<AssignmentsDTO>() {}.type
+        return json?.let { gson.fromJson<AssignmentsDTO>(it, type) }
+    }
+
+    suspend fun fetchTroopDistribution(): TroopDistributionDTO? {
+        val request = createRequest("GET", "/game/distributeTroops")
+        val response = execute(request)
+        val json = response.body?.string()
+        val type = object : TypeToken<TroopDistributionDTO>() {}.type
+        return json?.let { gson.fromJson<TroopDistributionDTO>(it, type) }
     }
 
     private fun createRequest(method: String, path: String, vararg params: String): Request {
