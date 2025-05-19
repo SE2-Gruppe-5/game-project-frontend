@@ -2,12 +2,9 @@ package com.se2gruppe5.risikofrontend.game.managers
 
 import android.annotation.SuppressLint
 import android.app.Activity
-
 import com.se2gruppe5.risikofrontend.game.dataclasses.PlayerRecord
 import com.se2gruppe5.risikofrontend.game.dataclasses.TerritoryRecord
-import com.se2gruppe5.risikofrontend.game.dialogues.AttackTroopDialog
-import com.se2gruppe5.risikofrontend.game.dialogues.MoveTroopDialog
-
+import com.se2gruppe5.risikofrontend.game.dialogues.IDialogueHandler
 import com.se2gruppe5.risikofrontend.game.enums.Phases
 import com.se2gruppe5.risikofrontend.game.territory.IPointingArrowUI
 import com.se2gruppe5.risikofrontend.game.territory.ITerritoryVisual
@@ -20,16 +17,16 @@ const val TERRITORY_NO_OWNER_COLOR: Int = 0x999999
 private var toastEnabled: Boolean = true;
 
 class TerritoryManager private constructor(
-    val me: PlayerRecord?, val pointingArrow: IPointingArrowUI, val activity: Activity
+    val me: PlayerRecord?, val pointingArrow: IPointingArrowUI, val activity: Activity, val dialogManager: IDialogueHandler
 ) {
     companion object {
 
         @SuppressLint("StaticFieldLeak")
         private var singleton: TerritoryManager? = null
 
-        fun init(me: PlayerRecord?, pointingArrow: IPointingArrowUI, activity: Activity) {
+        fun init(me: PlayerRecord?, pointingArrow: IPointingArrowUI, activity: Activity, dialogManager: IDialogueHandler) {
             if (singleton == null) {
-                singleton = TerritoryManager(me, pointingArrow, activity)
+                singleton = TerritoryManager(me, pointingArrow, activity, dialogManager)
             }
         }
 
@@ -52,6 +49,13 @@ class TerritoryManager private constructor(
 
     private val territoryList: MutableList<ITerritoryVisual> = mutableListOf()
     private var prevSelTerritory: ITerritoryVisual? = null
+
+    /**
+     * Unit Test only, do not call
+     */
+    fun setPrevSelTerritory(t: ITerritoryVisual){
+        prevSelTerritory = t
+    }
 
     private fun territoriesSanityCheck(t: ITerritoryVisual) {
         //todo
@@ -141,7 +145,7 @@ class TerritoryManager private constructor(
         t.clickSubscription(::hasBeenClicked) //Observer design pattern
     }
 
-    private fun hasBeenClicked(t: ITerritoryVisual) {
+     fun hasBeenClicked(t: ITerritoryVisual) {
         val phase = GameManager.get().getCurrentPhase()
         if (myTurn()) {
             if (prevSelTerritory != t && prevSelTerritory != null
@@ -153,13 +157,7 @@ class TerritoryManager private constructor(
                 }
                 if (phase == Phases.Reinforce) {
                     if (isMe(prevSelTerritory!!.territoryRecord.owner) && isMe(t.territoryRecord.owner)) {
-                        MoveTroopDialog(
-                            context = activity,
-                            maxTroops = prevSelTerritory!!.territoryRecord.stat - 1,
-                            minTroops = 2,
-                            fromTerritory = prevSelTerritory!!,
-                            toTerritory = t
-                        ).show()
+                        dialogManager.useReinforceDialog(prevSelTerritory!!, t)
                     } else {
                         if (toastEnabled) {
                             ToastUtils.showShortToast(
@@ -169,15 +167,7 @@ class TerritoryManager private constructor(
                     }
                 } else if (phase == Phases.Attack) {
                     if (isMe(prevSelTerritory!!.territoryRecord.owner) && !isMe(t.territoryRecord.owner)) {
-                        AttackTroopDialog(
-                            context = activity,
-                            maxTroops = prevSelTerritory!!.territoryRecord.stat - 1,
-                            minTroops = 1,
-                            fromTerritory = prevSelTerritory!!,
-                            toTerritory = t
-                        ) { troops ->
-                            attackTerritory(t)
-                        }.show()
+                        dialogManager.useAttackDialog(prevSelTerritory!!, t, {troops -> attackTerritory(t)})
                     } else {
                         if (toastEnabled) {
                             ToastUtils.showShortToast(
@@ -190,9 +180,12 @@ class TerritoryManager private constructor(
                 }
 
             }
+
             updateSelected(t)
             changeTerritoryRequest(t.territoryRecord)
         }
+
+
     }
 
 
