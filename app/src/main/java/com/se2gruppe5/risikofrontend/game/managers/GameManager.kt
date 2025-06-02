@@ -1,7 +1,9 @@
 package com.se2gruppe5.risikofrontend.game.managers
 
+import com.se2gruppe5.risikofrontend.game.cards.CardHandler
 import com.se2gruppe5.risikofrontend.game.dataclasses.PlayerRecord
 import com.se2gruppe5.risikofrontend.game.dataclasses.TerritoryRecord
+import com.se2gruppe5.risikofrontend.game.dialogues.DialogueHandler
 import com.se2gruppe5.risikofrontend.game.enums.Phases
 import com.se2gruppe5.risikofrontend.network.INetworkClient
 import java.util.UUID
@@ -125,6 +127,10 @@ class GameManager private constructor(
     suspend fun nextPhase(): Boolean {
         if (isMyTurn()) {
             networkClient.changePhase(gameManagerUUID)
+            if(me.capturedTerritory){
+                CardHandler.getCard(me)
+                me.capturedTerritory = false
+            }
             return true
         }
         return false
@@ -151,6 +157,7 @@ class GameManager private constructor(
     fun whoAmI(): PlayerRecord{
         return me
     }
+
 
 
 }
